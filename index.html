@@ -118,19 +118,21 @@
     margin-top: 16px;
   }
 
-  video, .video-placeholder {
+  .video-embed {
+    position: relative;
     width: 100%;
+    aspect-ratio: 16/9;
     border-radius: 10px;
     border: 1px solid var(--border);
     background: #eef0f8;
+    overflow: hidden;
   }
-  .video-placeholder {
-    aspect-ratio: 16/9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--muted);
-    font-size: 14px;
+  .video-embed iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
   }
 
   footer { padding: 36px 0 56px; text-align: center; }
@@ -150,8 +152,8 @@
     <p class="tagline">A Chrome extension that reads a student's real Degree Works audit and recommends next semester's courses like an advisor would — respecting prerequisites, flagging bottlenecks, and citing exactly what it verified versus inferred.</p>
     <div class="cta-row">
       <a class="btn btn-primary" href="#for-judges">For judges: install &amp; test</a>
-      <a class="btn btn-secondary" href="REPLACE_WITH_DEMO_VIDEO_URL">Watch the 2-minute demo</a>
-      <a class="btn btn-secondary" href="REPLACE_WITH_GITHUB_REPO_URL">View source on GitHub</a>
+      <a class="btn btn-secondary" href="https://youtu.be/0Ar9FuW6Xcg" target="_blank" rel="noopener">Watch the 2-minute demo</a>
+      <a class="btn btn-secondary" href="https://github.com/DanglebenC/True-Course">View source on GitHub</a>
     </div>
   </div>
 </header>
@@ -166,7 +168,14 @@
 <section id="demo">
   <div class="wrap">
     <h2>Demo</h2>
-    <div class="video-placeholder">Demo video embed — replace this block with an &lt;iframe&gt; (Loom/Vimeo/Vidyard share embed) once recorded.</div>
+    <div class="video-embed">
+      <iframe
+        src="https://www.youtube.com/embed/0Ar9FuW6Xcg"
+        title="TrueCourse demo video"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen></iframe>
+    </div>
   </div>
 </section>
 
@@ -236,7 +245,7 @@
     <p>TrueCourse is a Chrome extension, not a hosted web app, so there's nothing else to click into from here except the source. It isn't published to the Chrome Web Store — this is a hackathon-scale build pointed at a sensitive, login-gated page.</p>
     <div class="judge-box">
       <ol>
-        <li>Download or clone the <a href="REPLACE_WITH_GITHUB_REPO_URL">GitHub repository</a>.</li>
+        <li>Download or clone the <a href="https://github.com/DanglebenC/True-Course">GitHub repository</a>.</li>
         <li>In Chrome, go to <code>chrome://extensions</code>.</li>
         <li>Turn on <strong>Developer mode</strong> (top right toggle).</li>
         <li>Click <strong>Load unpacked</strong> and select the <code>truecourse-extension</code> folder.</li>
@@ -250,7 +259,7 @@
 <footer>
   <div class="wrap">
     <p>Built for <a href="https://www.stellic.com/pathfinders" target="_blank" rel="noopener">Stellic's Pathfinders Challenge</a> — category: Degree Planning &amp; Discovery.</p>
-    <p><a href="REPLACE_WITH_GITHUB_REPO_URL">Source on GitHub</a></p>
+    <p><a href="https://github.com/DanglebenC/True-Course">Source on GitHub</a></p>
   </div>
 </footer>
 
