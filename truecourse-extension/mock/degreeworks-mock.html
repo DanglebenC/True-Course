@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Degree Works Dashboard (Sample Audit)</title>
+<style>
+  /*
+    Structural mirror of a real Ellucian Degree Works "Dashboard" audit page
+    (the modern React dashboard.bundle.js UI), verified against a live
+    instance. Real ids (student-name, block-{RULE_ID}, {RULE_ID}_statusLabel)
+    and the svg[aria-label] status pattern are reproduced exactly so this
+    page is scraped by the same code path as a real audit -- only the visual
+    styling here is simplified/invented, not the markup that matters for
+    parsing.
+  */
+  body { font-family: Arial, Helvetica, sans-serif; background:#f4f5f7; margin:0; padding:0; color:#1c1c1c; }
+  header { background:#0b2c5c; color:#fff; padding:14px 24px; }
+  header h1 { margin:0; font-size:18px; font-weight:600; }
+  header p { margin:4px 0 0; font-size:12px; opacity:.8; }
+  .field-row { background:#fff; margin:16px 24px; padding:16px 20px; border:1px solid #d7d9de; border-radius:6px; display:flex; flex-wrap:wrap; gap:20px; font-size:13px; }
+  .field-row label { display:block; }
+  .field-row .label { font-size:11px; text-transform:uppercase; color:#767a83; margin-bottom:2px; letter-spacing:.03em; }
+  .field-row input { border:none; background:transparent; font-size:13px; font-weight:600; color:#1c1c1c; width:220px; }
+  .degree-block { background:#fff; margin:16px 24px; border:1px solid #d7d9de; border-radius:6px; overflow:hidden; }
+  .block-meta-row { padding:4px 16px; font-size:12px; color:#4b4f57; }
+  .block-meta-row span:first-child { color:#767a83; margin-right:4px; }
+  h3 { padding:10px 16px; font-weight:600; font-size:14px; margin:0; border-bottom:1px solid #d7d9de; display:flex; justify-content:space-between; align-items:center; }
+  .status-pill { font-size:11px; padding:3px 9px; border-radius:99px; font-weight:600; text-transform:uppercase; letter-spacing:.02em; background:#eee; }
+  table.requirement-table { width:100%; border-collapse:collapse; font-size:13px; margin-top:6px; }
+  table.requirement-table th, table.requirement-table td { text-align:left; padding:8px 12px; border-top:1px solid #eceef1; font-weight:normal; }
+  table.requirement-table thead td { background:#f0f1f4; font-size:11px; text-transform:uppercase; color:#5a5e68; letter-spacing:.03em; border-top:none; }
+  svg.status-icon { width:14px; height:14px; margin-right:6px; vertical-align:middle; }
+  .view-details-btn { margin-left:10px; font-size:11px; padding:2px 8px; border:1px solid #c7cbe0; border-radius:4px; background:#fff; color:#1d2b64; cursor:pointer; }
+  footer { margin:24px; font-size:11px; color:#9a9da4; }
+
+  /* Mimics the real Degree Works course-detail dialog: role="dialog", an h2
+     header, a description <p>, then a "Prerequisites:" label <p> followed by
+     a <p> with the actual prerequisite text -- the exact shape
+     scrapeOpenCourseDialog() in popup.js looks for. */
+  #course-dialog-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); align-items:center; justify-content:center; z-index:100; }
+  #course-dialog-backdrop.open { display:flex; }
+  #course-dialog { background:#fff; border-radius:8px; padding:20px 24px; max-width:420px; width:90%; box-shadow:0 8px 30px rgba(0,0,0,.25); }
+  #course-dialog h2 { font-size:15px; margin:0 0 10px; }
+  #course-dialog p { font-size:12.5px; line-height:1.5; margin:4px 0; color:#333; }
+  #course-dialog .close-btn { float:right; border:none; background:none; font-size:14px; cursor:pointer; color:#767a83; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Degree Works Dashboard — Sample Audit</h1>
+  <p>Bundled with the TrueCourse extension so its DOM structure and ids mirror a real Ellucian Degree Works Dashboard audit, letting judges test the extension without a live school login.</p>
+</header>
+
+<div class="field-row">
+  <label><span class="label">Student ID</span><input id="student-id" value="00000000" readonly /></label>
+  <label><span class="label">Name</span><input id="student-name" value="Sample Student" readonly /></label>
+  <label><span class="label">Degree</span><input id="degree" value="Bachelor of Science" readonly /></label>
+</div>
+
+<!-- BLOCK: top-level degree block, carries credit/catalog/GPA metadata as sibling rows -->
+<div class="degree-block">
+  <h3 id="block-RA000313">
+    Bachelor of Science
+    <span class="status-pill">INCOMPLETE</span>
+    <div style="display:none"><span id="RA000313_statusLabel">INCOMPLETE</span></div>
+  </h3>
+  <div class="block-meta-row"><span>Credits required:</span>120</div>
+  <div class="block-meta-row"><span>Credits applied:</span>91</div>
+  <div class="block-meta-row"><span>Catalog year:</span>2023-2024</div>
+  <div class="block-meta-row"><span>GPA:</span>3.42</div>
+  <table class="requirement-table">
+    <thead><tr><td data-label="">Status</td><td data-label="">Course</td><td data-label="">Title</td><td data-label="">Grade</td><td data-label="">Credits</td><td data-label="">Term</td><td data-label="">Repeated</td></tr></thead>
+    <tbody>
+      <!-- Real Degree Works also renders top-level rollup rows that just
+           point to another block ("See X section") rather than being a
+           real requirement of their own -- verified against a live audit.
+           parseStillNeededDescription() should skip these entirely so they
+           don't get double-counted alongside that block's actual rows. -->
+      <tr>
+        <th><svg class="status-icon" aria-label="Not complete" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#a3271b"/></svg>Major Requirements</th>
+        <td>Still needed:</td><td>See Major in Computer Science section</td><td></td><td></td><td></td><td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- BLOCK: University Requirements (complete) -->
+<div class="degree-block">
+  <h3 id="block-RA000610">
+    University Requirements
+    <span class="status-pill">COMPLETE</span>
+    <div style="display:none"><span id="RA000610_statusLabel">COMPLETE</span></div>
+  </h3>
+  <table class="requirement-table">
+    <thead><tr><td data-label="">Status</td><td data-label="">Course</td><td data-label="">Title</td><td data-label="">Grade</td><td data-label="">Credits</td><td data-label="">Term</td><td data-label="">Repeated</td></tr></thead>
+    <tbody>
+      <tr>
+        <th><svg class="status-icon" aria-label="Requirement is complete" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#166a3e"/></svg>Minimum overall GPA requirement</th>
+        <td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- BLOCK: General Education Program (in progress) -->
+<div class="degree-block">
+  <h3 id="block-RA000609">
+    General Education Program
+    <span class="status-pill">INCOMPLETE</span>
+    <div style="display:none"><span id="RA000609_statusLabel">INCOMPLETE</span></div>
+  </h3>
+  <table class="requirement-table">
+    <thead><tr><td data-label="">Status</td><td data-label="">Course</td><td data-label="">Title</td><td data-label="">Grade</td><td data-label="">Credits</td><td data-label="">Term</td><td data-label="">Repeated</td></tr></thead>
+    <tbody>
+      <tr>
+        <th><svg class="status-icon" aria-label="Requirement is complete" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#166a3e"/></svg>College Writing I</th>
+        <td>ENGL 101</td><td>College Writing I</td><td>A-</td><td>3</td><td>Fall 2024</td><td></td>
+      </tr>
+      <tr>
+        <th><svg class="status-icon" aria-label="Requirement is complete" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#166a3e"/></svg>College Writing II</th>
+        <td>ENGL 102</td><td>College Writing II</td><td>B+</td><td>3</td><td>Spring 2025</td><td></td>
+      </tr>
+      <tr>
+        <!-- Real Degree Works row format for an either/or requirement,
+             verified against a live audit: first cell is a literal "Still
+             needed:" label, second cell is a free-text description --
+             tests parseStillNeededDescription()'s either/or handling. -->
+        <th><svg class="status-icon" aria-label="Not complete" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#a3271b"/></svg>Visual/Performing Arts</th>
+        <td>Still needed:</td><td>1 Class in ARTS 150 or MUSC 110</td><td></td><td></td><td></td><td></td>
+      </tr>
+      <tr>
+        <th><svg class="status-icon" aria-label="Not complete" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#a3271b"/></svg>Ethics &amp; Reasoning</th>
+        <td></td><td>PHIL 120</td><td></td><td>3</td><td></td><td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- BLOCK: Major Requirements (in progress, with a prerequisite chain / bottleneck course) -->
+<div class="degree-block">
+  <h3 id="block-RA000418">
+    Major in Computer Science
+    <span class="status-pill">INCOMPLETE</span>
+    <div style="display:none"><span id="RA000418_statusLabel">INCOMPLETE</span></div>
+  </h3>
+  <!-- Real Degree Works blocks often render a plain-English summary
+       sentence like this one -- verified against a live audit -- giving the
+       true remaining credit gap for the block, which can be smaller than
+       the sum of every "needed" row listed below it (e.g. an elective area
+       that lists several optional courses but only needs one more).
+       parseCreditsShortfall() looks for a <p> matching this pattern. -->
+  <p class="block-meta-row">48 to 55 credits are required. You currently have 45, you still need 3 more credits.</p>
+  <table class="requirement-table">
+    <thead><tr><td data-label="">Status</td><td data-label="">Course</td><td data-label="">Title</td><td data-label="">Grade</td><td data-label="">Credits</td><td data-label="">Term</td><td data-label="">Repeated</td></tr></thead>
+    <tbody>
+      <tr>
+        <th><svg class="status-icon" aria-label="Requirement is complete" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#166a3e"/></svg>Intro to Programming</th>
+        <td>CS 101</td><td>Intro to Programming</td><td>A</td><td>4</td><td>Fall 2024</td><td></td>
+      </tr>
+      <tr>
+        <th><svg class="status-icon" aria-label="Requirement is complete" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#166a3e"/></svg>Intro to Data Structures</th>
+        <td>CS 102</td><td>Intro to Data Structures</td><td>A-</td><td>4</td><td>Spring 2025</td><td></td>
+      </tr>
+      <tr>
+        <th><svg class="status-icon" aria-label="When the in-progress classes are completed this requirement should be complete" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#8a6100"/></svg>Discrete Mathematics</th>
+        <td>CS 201</td><td>Discrete Mathematics</td><td></td><td>3</td><td>Summer 2026 (in progress)</td><td></td>
+      </tr>
+      <tr>
+        <th><svg class="status-icon" aria-label="Not complete" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#a3271b"/></svg>Algorithms
+          <button type="button" id="btn-view-course-details" class="view-details-btn">View Details</button>
+        </th>
+        <td>CS 301</td><td>Algorithms (requires CS 102, CS 201)</td><td></td><td>3</td><td></td><td></td>
+      </tr>
+      <tr>
+        <th><svg class="status-icon" aria-label="Not complete" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#a3271b"/></svg>Computer Organization</th>
+        <td>CS 305</td><td>Computer Organization (requires CS 102)</td><td></td><td>3</td><td></td><td></td>
+      </tr>
+      <tr>
+        <th><svg class="status-icon" aria-label="Not complete" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#a3271b"/></svg>Operating Systems</th>
+        <td>CS 401</td><td>Operating Systems (requires CS 301)</td><td></td><td>3</td><td></td><td></td>
+      </tr>
+      <tr>
+        <th><svg class="status-icon" aria-label="Not complete" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#a3271b"/></svg>Senior Capstone</th>
+        <td>CS 490</td><td>Senior Capstone (requires CS 301, CS 401; Fall offering only)</td><td></td><td>3</td><td></td><td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- BLOCK: Free Electives (complete) -->
+<div class="degree-block">
+  <h3 id="block-RA000608">
+    Free Electives (BS)
+    <span class="status-pill">COMPLETE</span>
+    <div style="display:none"><span id="RA000608_statusLabel">COMPLETE</span></div>
+  </h3>
+  <table class="requirement-table">
+    <thead><tr><td data-label="">Status</td><td data-label="">Course</td><td data-label="">Title</td><td data-label="">Grade</td><td data-label="">Credits</td><td data-label="">Term</td><td data-label="">Repeated</td></tr></thead>
+    <tbody>
+      <tr>
+        <th><svg class="status-icon" aria-label="Requirement is complete" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#166a3e"/></svg>Free elective credits satisfied</th>
+        <td></td><td></td><td></td><td>9</td><td></td><td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Mock course-detail dialog, structurally matching the real Degree Works
+     course dialog (role="dialog", h2 header, description, Prerequisites
+     label + text). This is CS 301's underlying data -- fetchCourseDetailsBatchMock()
+     in mock.js reads it directly (regardless of whether it's visually open)
+     to stand in for the real /Dashboard/api/course-link lookup, since this
+     static page has no live backend to call. The "View Details" button
+     still opens it visually so a judge can see the source data themselves. -->
+<div id="course-dialog-backdrop">
+  <div id="course-dialog" role="dialog" aria-modal="true">
+    <button type="button" id="btn-close-course-dialog" class="close-btn" aria-label="Close">&#10005;</button>
+    <h2>CS 301 - 3 Credits - Algorithms</h2>
+    <p>Design and analysis of algorithms, including sorting, searching, graph algorithms, and complexity analysis. Offered (FALL/SPRING).</p>
+    <p></p>
+    <p>Prerequisites:</p>
+    <p>CS 102 (Intro to Data Structures) with a minimum grade of C or CS 201 (Discrete Mathematics) with a minimum grade of C</p>
+    <p>Sections:</p>
+    <table id="course-sections-table" class="requirement-table" aria-label="Sections">
+      <thead>
+        <tr>
+          <th data-label="term">Term</th>
+          <th data-label="crn">CRN</th>
+          <th data-label="section">Section</th>
+          <th data-label="seats">Seats</th>
+          <th data-label="meeting">Meeting</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-label="term">Fall 2026</td>
+          <td data-label="crn">20481</td>
+          <td data-label="section">001</td>
+          <td data-label="seats">12 open</td>
+          <td data-label="meeting">MWF 9:00am-9:50am</td>
+        </tr>
+        <tr>
+          <td data-label="term">Fall 2026</td>
+          <td data-label="crn">20482</td>
+          <td data-label="section">002</td>
+          <td data-label="seats">4 open</td>
+          <td data-label="meeting">TR 6:00pm-7:15pm</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<footer>
+  Sample data only — generated for testing the TrueCourse Chrome extension. Not a real student record.
+</footer>
+
+<!-- Wires up the "View Details"/close buttons and answers scan/import
+     requests from the popup over chrome.runtime messaging. All logic lives
+     in mock.js rather than inline here because Manifest V3's CSP for
+     extension pages blocks inline <script> and onclick="" outright, with no
+     opt-out -- see the top of mock.js for details. -->
+<script src="mock.js"></script>
+
+</body>
+</html>

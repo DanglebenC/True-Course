@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>TrueCourse</title>
+<link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <h1>TrueCourse</h1>
+    <p class="subtitle">Reads your Degree Works audit, plans your next semester.</p>
+  </header>
+
+  <main>
+    <section id="step-intro">
+      <p class="hint">
+        Open your school's Degree Works audit page, then click "Scan This Page."
+        No Degree Works account handy? Try the sample audit instead.
+      </p>
+      <button id="btn-scan" class="primary">Scan This Page</button>
+      <button id="btn-open-mock" class="secondary">Open Sample Degree Works Page</button>
+      <p id="scan-status" class="status"></p>
+    </section>
+
+    <section id="step-summary" class="hidden">
+      <h2>Audit Summary</h2>
+      <div id="student-summary"></div>
+      <div id="block-summary"></div>
+
+      <h2>Your Plan</h2>
+      <label for="input-grad-term">Target graduation term <span class="hint-inline">(optional)</span></label>
+      <input id="input-grad-term" type="text" placeholder="e.g. Spring 2028" />
+      <p class="hint">
+        Not sure yet -- part-time, behind schedule, or just transferred in? Leave this
+        blank and Claude will estimate a realistic timeline from what's left instead.
+      </p>
+
+      <label for="input-course-load">Courses you want next semester</label>
+      <select id="input-course-load">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4" selected>4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+      </select>
+
+      <label for="input-time-preference">Preferred class times <span class="hint-inline">(optional)</span></label>
+      <select id="input-time-preference">
+        <option value="">No preference</option>
+        <option value="morning">Morning (before 11am)</option>
+        <option value="midday">Midday / afternoon (11am-5pm)</option>
+        <option value="evening">Evening (after 5pm)</option>
+      </select>
+      <p class="hint">
+        When you click "Get My Course Plan," TrueCourse automatically looks up real
+        prerequisite and section/meeting-time data for every course you still need,
+        directly from Degree Works, using your current session -- no manual steps.
+      </p>
+
+      <label for="input-elective-scope">Flexible/elective areas</label>
+      <select id="input-elective-scope">
+        <option value="minimum" selected>Just meet the minimum required</option>
+        <option value="extra">I'd like to explore extra electives too</option>
+      </select>
+      <p class="hint">
+        Some requirement areas list more optional courses than you actually need --
+        Degree Works shows the real remaining credit gap, and by default the plan
+        stops there instead of piling on every optional course listed.
+      </p>
+
+      <button id="btn-recommend" class="primary">Get My Course Plan</button>
+      <p id="recommend-status" class="status"></p>
+    </section>
+
+    <section id="step-results" class="hidden">
+      <h2>Recommended Plan</h2>
+      <div id="results-content"></div>
+      <button id="btn-download-plan" class="secondary">Download Plan</button>
+      <button id="btn-restart" class="secondary">Start Over</button>
+    </section>
+  </main>
+
+  <footer>
+    <a id="link-options" href="#">Set Claude API key</a>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
